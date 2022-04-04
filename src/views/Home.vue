@@ -70,34 +70,33 @@ export default {
   data() {
     return {
       dialog: false,
-      data: [600, 550, 750, 250, 700],
       pacientes: [],
-      labels: ["Jan", "Feb", "Mar", "Apr", "May"],
+      labels: [],
       selectedYears: [1, 2, 3, 4],
       datasets: {
         1: {
           label: "Ultrafiltracion",
           borderColor: "rgba(255, 56, 96, 0.5)",
           backgroundColor: "rgba(255, 56, 96, 0.1)",
-          data:  [600, 550, 750, 250, 700],
+          data: [],
         },
         2: {
           label: "peso",
           borderColor: "rgba(50, 115, 220, 0.5)",
           backgroundColor: "rgba(50, 115, 220, 0.1)",
-          data: [300, 700, 450, 750, 450],
+          data: [],
         },
         3: {
           label: "PA.Sis",
           borderColor: "rgba(70, 190, 250, 0.5)",
           backgroundColor: "rgba(70, 190, 250, 0.1)",
-          data: [100, 500, 250, 250, 650],
+          data: [],
         },
         4: {
           label: "PA.Dis",
           borderColor: "rgba(120, 150, 150, 0.5)",
           backgroundColor: "rgba(120, 150, 150, 0.1)",
-          data: [800, 400, 150, 350, 950],
+          data: [],
         },
       },
     };
@@ -105,7 +104,11 @@ export default {
 
   methods: {
     buscarDatos(item) {
+      //this.labels.push("Jan", "Feb", "Mar", "Apr", "May", "Jun");
+
+      //console.log("esta", this.datasets[1].data);
       console.log("boton card", item);
+
       this.dialog = true;
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
@@ -124,7 +127,26 @@ export default {
               }
             )
             .then((res) => {
-              console.log("respusta de servidor", res.data);
+              console.log("respusta de servidor trat", res.data);
+              console.log("algo", this.datasets);
+
+              let claves = Object.keys(this.datasets);
+              console.log("algo2", claves.length);
+
+              for (let i = 0; i < claves.length; i++) {
+                let clave = claves[i];
+                console.log(this.datasets[clave]);
+              }
+
+              for (let i = 0; i < res.data.length; i++) {
+                console.log(res.data[i].fecha_reg);
+                this.labels.push(res.data[i].fecha_reg);
+                this.datasets[1].data.push(res.data[i].ultrafil);
+                this.datasets[2].data.push(res.data[i].peso);
+                this.datasets[3].data.push(res.data[i].pres_art);
+                this.datasets[4].data.push(res.data[i].pres_art_diast);
+              }
+              console.log(this.labels);
             })
             .catch((res) => {
               console.warn("Error:", res);
