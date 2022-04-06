@@ -104,8 +104,13 @@ export default {
 
   methods: {
     buscarDatos(item) {
+      //this.datasets=[];
       //this.labels.push("Jan", "Feb", "Mar", "Apr", "May", "Jun");
-
+      this.labels.pop();
+      this.datasets[1].data.pop();
+      this.datasets[2].data.pop();
+      this.datasets[3].data.pop();
+      this.datasets[4].data.pop();
       //console.log("esta", this.datasets[1].data);
       console.log("boton card", item);
 
@@ -139,7 +144,7 @@ export default {
               }
 
               for (let i = 0; i < res.data.length; i++) {
-                console.log(res.data[i].fecha_reg);
+                console.log("fecha",res.data[i].fecha_reg);
                 this.labels.push(res.data[i].fecha_reg);
                 this.datasets[1].data.push(res.data[i].ultrafil);
                 this.datasets[2].data.push(res.data[i].peso);
