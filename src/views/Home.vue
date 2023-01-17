@@ -1,5 +1,18 @@
 <template>
   <div>
+    <v-dialog v-model="dialogDataApi" hide-overlay persistent width="300">
+      <v-card color="#1973a5" dark>
+        <v-card-text>
+          Cargando Datos
+          <v-progress-linear
+            indeterminate
+            color="white"
+            class="mb-0"
+          ></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     <v-dialog v-model="dialog" width="600">
       <v-card>
         <v-card-title class="text-h5 grey lighten-2"> Datos </v-card-title>
@@ -104,6 +117,7 @@ export default {
 
   methods: {
     buscarDatos(item) {
+      console.log("labels1",this.labels);
       //this.datasets=[];
       //this.labels.push("Jan", "Feb", "Mar", "Apr", "May", "Jun");
       this.labels.pop();
@@ -114,6 +128,7 @@ export default {
       //console.log("esta", this.datasets[1].data);
       console.log("boton card", item);
 
+      this.dialogDataApi = true;
       this.dialog = true;
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
@@ -144,18 +159,19 @@ export default {
               }
 
               for (let i = 0; i < res.data.length; i++) {
-                console.log("fecha",res.data[i].fecha_reg);
+                console.log("fecha", res.data[i].fecha_reg);
                 this.labels.push(res.data[i].fecha_reg);
                 this.datasets[1].data.push(res.data[i].ultrafil);
                 this.datasets[2].data.push(res.data[i].peso);
                 this.datasets[3].data.push(res.data[i].pres_art);
                 this.datasets[4].data.push(res.data[i].pres_art_diast);
               }
-              console.log(this.labels);
+              console.log("labels2",this.labels);
+              this.dialogDataApi = false;
             })
             .catch((res) => {
               console.warn("Error:", res);
-              this.dialog = false;
+              this.dialogDataApi = false;
             });
         })
         .catch((response) => {
@@ -167,6 +183,7 @@ export default {
   },
 
   created() {
+    this.dialogDataApi = true;
     axios
       .post(RUTA_SERVIDOR + "/api/token/", {
         username: "cnsr",
@@ -181,10 +198,11 @@ export default {
           .then((res) => {
             this.pacientes = res.data;
             console.log("respusta de servidor", this.pacientes);
+            this.dialogDataApi = false;
           })
           .catch((res) => {
             console.warn("Error:", res);
-            this.dialog = false;
+            this.dialogDataApi = false;
           });
       })
       .catch((response) => {
